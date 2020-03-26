@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md w-2/3 p-4">
+  <div class="bg-white rounded-lg shadow-sm w-2/3 p-4">
     <div class="flex justify-between items-center">
       <div>
         <div class="w-8">
@@ -9,7 +9,7 @@
           />
         </div>
       </div>
-      <div class="flex-1 mx-4">
+      <div class="flex-1 mx-3">
         <input
           type="text"
           name="body"
