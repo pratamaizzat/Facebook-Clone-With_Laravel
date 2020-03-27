@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import NewsFeed from './views/NewsFeed.vue'
-import Start from './views/Start'
+import NewsFeed from './views/NewsFeed.vue';
+import Start from './views/Start';
+import UserShow from './views/Users/Show.vue'
 
 
 Vue.use(VueRouter);
@@ -10,8 +11,14 @@ export default new VueRouter({
     mode: 'history',
 
     routes: [{
-        path: '/',
-        name: 'home',
-        component: NewsFeed,
-    }]
+            path: '/',
+            name: 'home',
+            component: NewsFeed,
+        },
+        {
+            path: '/users/:userId',
+            name: 'user.show',
+            component: UserShow,
+        }
+    ]
 });

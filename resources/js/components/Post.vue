@@ -11,7 +11,7 @@
         <div class="ml-3 leading-4">
           <div class="text-sm font-bold">{{post.data.attributes.posted_by.data.attributes.name}}</div>
           <div class="flex items-end text-xs font-base text-gray-600">
-            1 hour ago
+            {{post.data.attributes.posted_at}}
             <span class="block px-1">&bull;</span>
           </div>
         </div>
@@ -20,11 +20,8 @@
         <p>{{ post.data.attributes.body }}</p>
       </div>
     </div>
-    <div v-if="true" class="w-full bg-cover">
-      <img
-        src="https://images.unsplash.com/photo-1524850011238-e3d235c7d4c9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=60"
-        class="w-full"
-      />
+    <div v-if="post.data.attributes.image" class="w-full bg-cover">
+      <img :src="post.data.attributes.image" class="w-full" />
     </div>
 
     <div class="px-4 pt-2 flex justify-between items-center text-gray-600 text-sm">

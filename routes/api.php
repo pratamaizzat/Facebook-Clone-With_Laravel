@@ -5,10 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
 
-    Route::get('/posts', 'PostContoller@index');
-    Route::post('/posts', 'PostContoller@store');
+    Route::apiResources([
+        'posts' => 'PostContoller',
+        'users' => 'UserController'
+    ]);
 });
