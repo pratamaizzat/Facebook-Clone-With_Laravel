@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\UserNotFoundException;
 use App\Friend;
 use App\Http\Resources\Friend as ResourcesFriend;
 use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class FriendRequestController extends Controller
@@ -16,8 +18,13 @@ class FriendRequestController extends Controller
         ]);
 
         //temukan user yang mempunyai relasi table
-        User::find($data['friend_id'])
-            ->friends()->attach(auth()->user());
+        //mengunakan metode dibawah dikarenakan memerlukan exception error jika terdapat user yang invalid. digunakan untuk Handle Invalid user Friend Request
+        try {
+            User::findOrFail($data['friend_id'])
+                ->friends()->attach(auth()->user());
+        } catch (ModelNotFoundException $e) {
+            throw new UserNotFoundException();
+        }
 
 
         return new ResourcesFriend(
