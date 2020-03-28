@@ -100,4 +100,25 @@ class FriendTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function only_valid_friend_request_can_be_accepted()
+    {
+        /* fungsi test ini untuk memastikan hanya user valid yang dapat diterima oleh requestnya */
+        $anotherUser = factory(User::class)->create();
+        $response = $this->actingAs($anotherUser, 'api')
+            ->post('/api/friend-request-response', [
+                'user_id' => 123, //memastikan merupakan valid friend request
+                'status' => 1, //
+            ])->assertStatus(404);
+
+        $this->assertNull(Friend::first());
+        $response->assertJson([
+            'errors' =>  [
+                'code' => 404,
+                'title' => 'Friend Request Not Found',
+                'detail' => 'Unable to locate request with the given information.'
+            ]
+        ]);
+    }
 }
