@@ -151,7 +151,8 @@ class FriendTest extends TestCase
         ]);
     }
 
-    //validation Rulu untuk friend request
+    //validation Rule untuk friend request
+    //rule1 friend_id is required
 
     /** @test */
     public function a_friend_id_is_required_for_friend_request()
@@ -159,10 +160,28 @@ class FriendTest extends TestCase
         $response = $this->actingAs($user = factory(User::class)->create(), 'api')
             ->post('/api/friend-request', [
                 'friend_id' => '',
-            ]);
+            ])->assertStatus(422);
 
         //turn back into assoc array from json
         $responseString = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('friend_id', $responseString['errors']['meta']);
+    }
+
+
+    //rule2 pada untuk friend request response bahwa user_id dan status adalah required
+
+    /** @test */
+    public function a_user_id_and_status_is_required_for_friend_request_responses()
+    {
+        $response = $this->actingAs($user = factory(User::class)->create(), 'api')
+            ->post('/api/friend-request-response', [
+                'user_id' => '',
+                'status' => '',
+            ])->assertStatus(422);
+
+
+        $responseString = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('user_id', $responseString['errors']['meta']);
+        $this->assertArrayHasKey('status', $responseString['errors']['meta']);
     }
 }

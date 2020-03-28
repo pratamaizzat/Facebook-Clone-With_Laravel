@@ -14,6 +14,7 @@ class ValidationErrorException extends Exception
      */
     public function render($request)
     {
+        //Validasi error akan mengarah ke respon berikut karena otomatis diarahkan dari Exceptions/Hanlder.php@render
         return response()->json([
             'errors' =>  [
                 'code' => 422,
