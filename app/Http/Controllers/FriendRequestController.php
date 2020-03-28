@@ -3,20 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\UserNotFoundException;
+use App\Exceptions\ValidationErrorException;
 use App\Friend;
 use App\Http\Resources\Friend as ResourcesFriend;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class FriendRequestController extends Controller
 {
     public function store()
     {
         $data = request()->validate([
-            'friend_id' => ''
+            'friend_id' => 'required'
         ]);
-
         //temukan user yang mempunyai relasi table
         //mengunakan metode dibawah dikarenakan memerlukan exception error jika terdapat user yang invalid. digunakan untuk Handle Invalid user Friend Request
         try {
