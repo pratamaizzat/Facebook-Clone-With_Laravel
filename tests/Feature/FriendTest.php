@@ -41,4 +41,10 @@ class FriendTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function only_valid_user_can_be_friend_requested()
+    {
+        $this->withoutExceptionHandling();
+    }
 }
