@@ -250,4 +250,77 @@ class FriendTest extends TestCase
                 ]
             ]);
     }
+
+
+    //menolak friend_request
+
+    /** @test */
+    public function friend_request_can_be_ignored()
+    {
+        $this->withoutExceptionHandling();
+        //start friend request to anotherUser
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $anotherUser = factory(User::class)->create();
+
+        $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(200);
+
+        //end request to anotherUser
+
+
+        //login with accont anotherUser(actingAs) kemudian accept friend request
+        $response = $this->actingAs($anotherUser, 'api')
+            ->delete('/api/friend-request-response/delete', [
+                'user_id' => $user->id, //memastikan merupakan valid friend request
+            ])->assertStatus(204);
+
+        $friendRequest = Friend::first(); //merupakan friend request yang complited yang di tolak 
+        $this->assertNull($friendRequest); //memastikan semua isi dari $friendRequest adalah null atau fale
+
+        $response->assertNoContent();
+    }
+
+
+    /** @test */
+    public function only_the_recipient_can_ignore_a_friend_request()
+    {
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $anotherUser = factory(User::class)->create();
+        $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(200);
+
+        //third user yang mencoba meng-ignore request (invalid request)
+        $response = $this->actingAs(factory(User::class)->create(), 'api')
+            ->delete('/api/friend-request-response/delete', [
+                'user_id' => $user->id,
+            ])->assertStatus(404);
+
+
+        $friendRequest = Friend::first();
+        $this->assertNull($friendRequest->confirmed_at);
+        $this->assertNull($friendRequest->status);
+        $response->assertJson([
+            'errors' =>  [
+                'code' => 404,
+                'title' => 'Friend Request Not Found',
+                'detail' => 'Unable to locate request with the given information.'
+            ]
+        ]);
+    }
+
+    //validasi bahwa user_id require untuk ignore friend request
+    /** @test */
+    public function a_user_id_is_required_for_ignoring_a_friend_request_responses()
+    {
+        $response = $this->actingAs($user = factory(User::class)->create(), 'api')
+            ->delete('/api/friend-request-response/delete', [
+                'user_id' => '',
+            ])->assertStatus(422);
+
+
+        $responseString = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('user_id', $responseString['errors']['meta']);
+    }
 }

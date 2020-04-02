@@ -21,6 +21,8 @@ class Friend extends Model
                     ->where('user_id', auth()->user()->id)
                     ->where('friend_id', $userId);
             })
+
+            //yang bawah diperuntukkan untuk test an_inverse_friendship_is_retrived_when_fetching_the_profile()
             ->orwhere(function ($query) use ($userId) { //berbeda kondisi dari yang diatas. berikut merupakan opposite dari yang diatas
                 return $query
                     ->where('friend_id', auth()->user()->id)
